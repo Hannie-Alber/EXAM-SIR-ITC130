@@ -17,7 +17,7 @@ export default function ProductsPage() {
   const [tagFilter, setTagFilter] = useState<string | "all">("all");
 
   useEffect(() => {
-    const load = async () => {
+    const load = async (): Promise<void> => {
       try {
         setLoading(true);
         setError(null);
@@ -27,10 +27,12 @@ export default function ProductsPage() {
           throw new Error(`Failed to load products (${res.status})`);
         }
 
-        const json: ProductsResponse = await res.json();
+        const json: ProductsResponse = (await res.json()) as ProductsResponse;
         setProducts(json.data ?? []);
-      } catch (err: any) {
-        setError(err?.message ?? "Failed to load products");
+      } catch (err: unknown) {
+        const message =
+          err instanceof Error ? err.message : "Failed to load products";
+        setError(message);
       } finally {
         setLoading(false);
       }

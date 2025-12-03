@@ -50,7 +50,7 @@ export default function SignupPage() {
     return null;
   }
 
-  const onSubmit = async (values: SignupFormValues) => {
+  const onSubmit = async (values: SignupFormValues): Promise<void> => {
     try {
       const res = await fetch("/api/auth/signup", {
         method: "POST",
@@ -63,7 +63,12 @@ export default function SignupPage() {
       });
 
       if (!res.ok) {
-        const json = await res.json().catch(() => ({}));
+        let json: { error?: string } = {};
+
+        try {
+          json = (await res.json()) as { error?: string };
+        } catch {}
+
         const msg = json.error ?? `Failed to sign up (${res.status})`;
 
         if (res.status === 409) {
@@ -79,9 +84,12 @@ export default function SignupPage() {
         password: values.password,
         callbackUrl,
       });
-    } catch (err: any) {
+    } catch (err: unknown) {
+      const message =
+        err instanceof Error ? err.message : "Unexpected error during signup";
+
       setError("root", {
-        message: err?.message ?? "Unexpected error during signup",
+        message,
       });
     }
   };

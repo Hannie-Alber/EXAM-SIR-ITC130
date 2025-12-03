@@ -1,8 +1,8 @@
 export const runtime = "nodejs";
 
 import { NextResponse } from "next/server";
-import { z } from "zod";
 import { createUser } from "@/lib/userStore";
+import { z } from "zod";
 
 const signupSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -10,9 +10,9 @@ const signupSchema = z.object({
   password: z.string().min(6, "Password must be at least 6 characters"),
 });
 
-export async function POST(req: Request) {
+export async function POST(req: Request): Promise<NextResponse> {
   try {
-    const body = await req.json();
+    const body: unknown = await req.json();
     const parsed = signupSchema.safeParse(body);
 
     if (!parsed.success) {
@@ -29,6 +29,7 @@ export async function POST(req: Request) {
 
     try {
       const user = await createUser(name, email, password);
+
       return NextResponse.json(
         {
           data: {
@@ -39,16 +40,19 @@ export async function POST(req: Request) {
         },
         { status: 201 }
       );
-    } catch (err: any) {
-      if (err?.message?.includes("already exists")) {
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : "Unknown error";
+
+      if (message.includes("already exists")) {
         return NextResponse.json(
           { error: "User with this email already exists" },
           { status: 409 }
         );
       }
+
       throw err;
     }
-  } catch (err) {
+  } catch (err: unknown) {
     console.error("Signup error:", err);
     return NextResponse.json(
       { error: "Internal server error" },

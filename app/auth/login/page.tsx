@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { useMemo } from "react";
+import type { SignInResponse } from "next-auth/react";
 
 type LoginFormValues = {
   email: string;
@@ -60,9 +61,9 @@ export default function LoginPage() {
     return null;
   }
 
-  const onEmailLogin = async (values: LoginFormValues) => {
+  const onEmailLogin = async (values: LoginFormValues): Promise<void> => {
     try {
-      const result = await signIn("credentials", {
+      const result: SignInResponse | undefined = await signIn("credentials", {
         email: values.email,
         password: values.password,
         callbackUrl,
@@ -79,9 +80,12 @@ export default function LoginPage() {
       if (result?.url) {
         router.push(result.url);
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
+      const message =
+        err instanceof Error ? err.message : "Unexpected error during login";
+
       setError("password", {
-        message: err?.message ?? "Unexpected error during login",
+        message,
       });
     }
   };

@@ -79,5 +79,32 @@
     "created_at": "2025-12-01T16:02:04.828Z",
     "updated_at": "2025-12-01T16:02:04.828Z",
     "published_at": "2025-12-01T16:02:04.828Z"
+  },
+  {
+    "id": "2edef101-1c4c-4d90-aca0-9fcebdfea04e",
+    "title": "Test12321",
+    "body_html": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+    "vendor": "MixenMatch",
+    "product_type": "aste",
+    "tags": [
+      "asdas"
+    ],
+    "options": [],
+    "images": [
+      {
+        "src": "https://www.forlifedesignusa.com/cdn/shop/products/521-MND.jpg?v=1582155776"
+      }
+    ],
+    "variants": [
+      {
+        "id": "bc80592b-c533-4595-ac40-d57335a7e872",
+        "sku": "#12312312",
+        "title": "t",
+        "price": 50
+      }
+    ],
+    "created_at": "2025-12-03T14:14:46.395Z",
+    "updated_at": "2025-12-03T14:15:54.886Z",
+    "published_at": "2025-12-03T14:14:46.395Z"
   }
 ]

@@ -48,8 +48,12 @@ export default function ProductDetailPage() {
         }
 
         setProduct(json.data);
-      } catch (err: any) {
-        setError(err.message ?? "Unexpected error");
+      } catch (err: unknown) {
+        const message =
+          err instanceof Error
+            ? err.message
+            : "Unexpected error during loading of product";
+        setError(message ?? "Unexpected error");
       } finally {
         setLoading(false);
       }
@@ -59,28 +63,6 @@ export default function ProductDetailPage() {
       void load();
     }
   }, [id]);
-
-  const handleDelete = async () => {
-    if (!product) return;
-    if (!confirm(`Delete product "${product.title}"? This cannot be undone.`)) {
-      return;
-    }
-
-    try {
-      setDeleting(true);
-      const res = await fetch(`/api/products/${product.id}`, {
-        method: "DELETE",
-      });
-      if (!res.ok) {
-        const json = await res.json().catch(() => ({}));
-        throw new Error(json.error ?? "Failed to delete");
-      }
-      router.push("/products");
-    } catch (err: any) {
-      alert(err.message ?? "Failed to delete");
-      setDeleting(false);
-    }
-  };
 
   if (loading) {
     return <p className="text-slate-300">Loading product…</p>;
@@ -156,17 +138,6 @@ export default function ProductDetailPage() {
               </>
             )}
           </p>
-        </div>
-
-        <div className="flex gap-3">
-          <button
-            type="button"
-            disabled={deleting}
-            onClick={handleDelete}
-            className="rounded-md border border-red-500 px-3 py-1.5 text-xs font-medium text-red-200 hover:bg-red-950/50 disabled:opacity-60"
-          >
-            {deleting ? "Deleting…" : "Delete"}
-          </button>
         </div>
       </header>
 

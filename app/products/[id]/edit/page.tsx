@@ -22,7 +22,7 @@ const variantSchema = z.object({
   id: z.string().optional(),
   title: z.string().optional(),
   sku: z.string().optional(),
-  price: z.coerce.number().positive("Price must be greater than 0"),
+  price: z.number().positive("Price must be greater than 0"),
 });
 
 const formSchema = z.object({
@@ -107,7 +107,7 @@ export default function EditProductPage() {
   useEffect(() => {
     if (status !== "authenticated" || !id) return;
 
-    const load = async () => {
+    const load = async (): Promise<void> => {
       try {
         setLoadingProduct(true);
         setLoadError(null);
@@ -144,8 +144,11 @@ export default function EditProductPage() {
             ? variants
             : [{ title: "", sku: "", price: 0 }],
         });
-      } catch (err: any) {
-        setLoadError(err?.message ?? "Failed to load product");
+      } catch (err: unknown) {
+        const message =
+          err instanceof Error ? err.message : "Unexpected error edit";
+
+        setLoadError(message);
       } finally {
         setLoadingProduct(false);
       }
@@ -154,7 +157,7 @@ export default function EditProductPage() {
     void load();
   }, [status, id, reset]);
 
-  const onSubmit = async (values: FormValues) => {
+  const onSubmit = async (values: FormValues): Promise<void> => {
     if (!id) return;
 
     try {
@@ -196,15 +199,17 @@ export default function EditProductPage() {
       });
 
       if (!res.ok) {
-        const json = await res.json().catch(() => ({}));
+        const json: { error?: string } = await res.json().catch(() => ({}));
         throw new Error(
           json.error ?? `Failed to update product (${res.status})`
         );
       }
 
       router.push(`/products/${id}`);
-    } catch (err: any) {
-      setSubmitError(err?.message ?? "Failed to update product");
+    } catch (err: unknown) {
+      const message =
+        err instanceof Error ? err.message : "Unexpected error edit";
+      setSubmitError(message);
     } finally {
       setSubmitting(false);
     }
@@ -236,23 +241,23 @@ export default function EditProductPage() {
   }
 
   return (
-    <div className="max-w-3xl space-y-6">
+    <div className="max-w-3xl mx-auto space-y-6">
       <header>
-        <h1 className="text-2xl font-semibold">Edit product</h1>
+        <h1 className="text-2xl font-semibold text-slate-600">Edit product</h1>
         <p className="text-sm text-slate-400">
           Same fields as &quot;Add product&quot;, including images and variants.
         </p>
       </header>
 
       {submitError && (
-        <p className="rounded-md border border-red-500/60 bg-red-950/40 px-3 py-2 text-xs text-red-100">
+        <p className="rounded-md border border-red-600/60 bg-red-950/40 px-3 py-2 text-xs text-red-100">
           {submitError}
         </p>
       )}
 
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="space-y-6 rounded-xl border border-slate-800 bg-slate-900/50 p-4"
+        className="space-y-6 rounded-xl border border-slate-300 bg-slate-700/50 p-4"
       >
         <div className="space-y-3">
           <div className="space-y-1">
@@ -490,7 +495,7 @@ export default function EditProductPage() {
         <div className="flex justify-end gap-2 pt-2">
           <button
             type="button"
-            onClick={() => router.back()}
+            onClick={() => router.push("/admin")}
             className="rounded-md border border-slate-700 px-4 py-2 text-xs font-medium text-slate-100 hover:bg-slate-900"
           >
             Cancel

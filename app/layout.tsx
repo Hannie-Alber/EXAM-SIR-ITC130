@@ -25,9 +25,6 @@ export default function RootLayout({
             <main className="flex-1 container mx-auto px-4 py-6">
               {children}
             </main>
-            <footer className="border-t border-slate-800 py-4 text-center text-xs text-slate-400">
-              Next Shop Catalog &copy; {new Date().getFullYear()}
-            </footer>
           </div>
         </AuthProvider>
       </body>

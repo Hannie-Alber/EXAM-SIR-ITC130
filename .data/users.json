@@ -1,0 +1,14 @@
+[
+  {
+    "id": "user_lpuzoux1pxmiq35wdn",
+    "name": "Luie test2",
+    "email": "luie11@test.com",
+    "passwordHash": "$2b$10$yUN92BIFyMjR.F7SbqcbK.Phajy1toy75cr6dcZnZQNFnUvY6WWWW"
+  },
+  {
+    "id": "user_sc6ttagl4pgmiq3bwch",
+    "name": "luie test",
+    "email": "luie12@test.com",
+    "passwordHash": "$2b$10$BUH9U9Q7BtIDPOK88BaNNer98j6nzc3NvZQIL48BYlDulSrbrOG8S"
+  }
+]

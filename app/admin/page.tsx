@@ -10,6 +10,13 @@ interface ProductsResponse {
   data: ProductListItem[];
 }
 
+function getErrorMessage(error: unknown, fallback: string): string {
+  if (error instanceof Error && error.message) {
+    return error.message;
+  }
+  return fallback;
+}
+
 export default function AdminProductsPage() {
   const { data: session, status } = useSession();
   const router = useRouter();
@@ -29,7 +36,7 @@ export default function AdminProductsPage() {
   useEffect(() => {
     if (status !== "authenticated") return;
 
-    const load = async () => {
+    const load = async (): Promise<void> => {
       try {
         setLoadingProducts(true);
         setError(null);
@@ -38,10 +45,11 @@ export default function AdminProductsPage() {
         if (!res.ok) {
           throw new Error(`Failed to load products (${res.status})`);
         }
+
         const json: ProductsResponse = await res.json();
         setProducts(json.data);
-      } catch (err: any) {
-        setError(err?.message ?? "Failed to load products");
+      } catch (err: unknown) {
+        setError(getErrorMessage(err, "Failed to load products"));
       } finally {
         setLoadingProducts(false);
       }
@@ -50,19 +58,25 @@ export default function AdminProductsPage() {
     void load();
   }, [status]);
 
-  const handleDelete = async (id: string, title: string) => {
-    if (!confirm(`Delete product "${title}"? This cannot be undone.`)) return;
+  const handleDelete = async (id: string, title: string): Promise<void> => {
+    const confirmed = confirm(
+      `Delete product "${title}"? This cannot be undone.`
+    );
+    if (!confirmed) return;
 
     try {
       setDeletingId(id);
       const res = await fetch(`/api/products/${id}`, { method: "DELETE" });
+
       if (!res.ok) {
-        const json = await res.json().catch(() => ({}));
+        const json: { error?: string } = await res.json().catch(() => ({}));
         throw new Error(json.error ?? `Failed to delete (${res.status})`);
       }
+
       setProducts((prev) => prev.filter((p) => p.id !== id));
-    } catch (err: any) {
-      alert(err?.message ?? "Failed to delete product");
+    } catch (err: unknown) {
+      // eslint-disable-next-line no-alert
+      alert(getErrorMessage(err, "Failed to delete product"));
     } finally {
       setDeletingId(null);
     }

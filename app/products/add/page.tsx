@@ -97,8 +97,13 @@ export default function AddProductPage() {
       } else {
         router.push("/products");
       }
-    } catch (err: any) {
-      setServerError(err.message ?? "Something went wrong");
+    } catch (err: unknown) {
+      const message =
+        err instanceof Error
+          ? err.message
+          : "Unexpected error during adding of product";
+
+      setServerError(message ?? "Something went wrong");
     }
   };
 
@@ -300,7 +305,7 @@ export default function AddProductPage() {
         <div className="flex justify-end gap-3 pt-4">
           <button
             type="button"
-            onClick={() => router.push("/products")}
+            onClick={() => router.push("/admin")}
             className="rounded-md border border-slate-700 px-4 py-2 text-sm hover:bg-slate-900"
           >
             Cancel
