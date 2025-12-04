@@ -10,5 +10,11 @@
     "name": "luie test",
     "email": "luie12@test.com",
     "passwordHash": "$2b$10$BUH9U9Q7BtIDPOK88BaNNer98j6nzc3NvZQIL48BYlDulSrbrOG8S"
+  },
+  {
+    "id": "user_f269msnelrmiqtka3v",
+    "name": "Hannie",
+    "email": "hannieisobal@gmail.com",
+    "passwordHash": "$2b$10$bcHjCzoDr0HpKf8gDux8cOYMw41vvvTO.IhqiUrTJyJRaj1r94M/O"
   }
 ]
